@@ -1,4 +1,5 @@
 import React from "react";
+import { StyleSheet, View } from "react-native";
 import {
   ListItem,
   Thumbnail,
@@ -8,6 +9,7 @@ import {
   Right,
   Button,
 } from "native-base";
+import TimeAgo from "./time";
 
 const DataItem = (props) => {
   const data = props.data;
@@ -32,6 +34,10 @@ const DataItem = (props) => {
         <Text note numberOfLines={2}>
           {data.description}
         </Text>
+        <View style={styles.time}>
+          <Text note>{data.source.name}</Text>
+          <TimeAgo time={data.publishedAt} />
+        </View>
       </Body>
       <Right>
         <Button transparent>
@@ -43,3 +49,12 @@ const DataItem = (props) => {
 };
 
 export default DataItem;
+
+const styles = StyleSheet.create({
+  time: {
+    flex: 1,
+    flexDirection: "row",
+    marginTop: 8,
+    marginLeft: 0,
+  },
+});

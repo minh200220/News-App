@@ -5,8 +5,22 @@
     "name": "News",
     "slug": "News",
     "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "ios": {
+      "bundleIdentifier": "com.nqminh.newsapp",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.nqminh.newsapp",
+      "versionCode": 1
+    },
+    "description": "a mobile news app"
   }
 }
