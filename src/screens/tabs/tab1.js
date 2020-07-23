@@ -1,56 +1,75 @@
-import React, { useEffect } from "react";
-import { Alert, View, ActivityIndicator, Text, StyleSheet } from "react-native";
-import { Container, Content, List } from "native-base";
+import React, { Component } from "react";
+import { Alert, View, ActivityIndicator } from "react-native";
+import { Container, Content, List, Text } from "native-base";
 
+import Modal from "../../components/modal";
 import DataItem from "../../components/dataItem";
 import { getArticles } from "../../service/news";
 
-export default function ListThumbnailExample() {
-  const [isLoading, setLoading] = React.useState(true);
-  const [data, setData] = React.useState(null);
+export default class Tab1 extends Component {
+  constructor(props) {
+    super(props);
 
-  useEffect(() => {
-    getArticles().then(
+    this.state = {
+      isLoading: true,
+      data: null,
+      setModalVisible: false,
+      modalArticleData: {},
+    };
+  }
+
+  handleItemDataOnPress = (articleData) => {
+    this.setState({
+      setModalVisible: true,
+      modalArticleData: articleData,
+    });
+  };
+
+  handleModalClose = () => {
+    this.setState({
+      setModalVisible: false,
+      modalArticleData: {},
+    });
+  };
+
+  componentDidMount() {
+    getArticles("general").then(
       (data) => {
-        setLoading(false);
-        setData(data);
+        this.setState({
+          isLoading: false,
+          data: data,
+        });
       },
       (error) => {
         Alert.alert("Error", "Something went wrong!");
       }
     );
-  });
+  }
 
-  if (isLoading)
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator animating={isLoading} />
-        <Text style={styles.text}>Please wait...</Text>
+  render() {
+    let view = this.state.isLoading ? (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator animating={this.state.isLoading} color="#00f0ff" />
+        <Text style={{ marginTop: 10 }} children="Please Wait.." />
       </View>
+    ) : (
+      <List
+        dataArray={this.state.data}
+        renderRow={(item) => {
+          return <DataItem onPress={this.handleItemDataOnPress} data={item} />;
+        }}
+      />
     );
-  else
+
     return (
       <Container>
-        <Content>
-          <List
-            dataArray={data}
-            renderRow={(item) => {
-              return <DataItem data={item} />;
-            }}
-            keyExtractor={(item, index) => index.toString()}
-          />
-        </Content>
+        <Content>{view}</Content>
+        <Modal
+          showModal={this.state.setModalVisible}
+          articleData={this.state.modalArticleData}
+          onClose={this.handleModalClose}
+        />
       </Container>
     );
+  }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  text: {
-    marginTop: 20,
-  },
-});
